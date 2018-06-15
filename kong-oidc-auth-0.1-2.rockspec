@@ -13,8 +13,8 @@ dependencies = {}
 build = {
    type = "builtin",
    modules = {
-      ["kong.plugins.kong-oidc-auth.access"] = "src/access.lua",
-      ["kong.plugins.kong-oidc-auth.handler"]  = "src/handler.lua",
-      ["kong.plugins.kong-oidc-auth.schema"]= "src/schema.lua"
+      ["kong.plugins.kong-oidc-auth-akshay.access"] = "src/access.lua",
+      ["kong.plugins.kong-oidc-auth-akshay.handler"]  = "src/handler.lua",
+      ["kong.plugins.kong-oidc-auth-akshay.schema"]= "src/schema.lua"
    }
 }
