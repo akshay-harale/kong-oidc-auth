@@ -181,12 +181,12 @@ function _M.run(conf)
 	
 	if pl_stringx.endswith(path_prefix, "/") then
 	  path_prefix = path_prefix:sub(1, path_prefix:len() - 1)
-	  callback_url = ngx.var.scheme .. "://" .. ngx.var.host ..":8000" .. path_prefix .. "/oauth2/callback"
+	  callback_url = ngx.var.scheme .. "://" .. "localhost:8000" .. path_prefix .. "/oauth2/callback"
 	elseif pl_stringx.endswith(path_prefix, "/oauth2/callback") then --We are in the callback of our proxy
-	  callback_url = ngx.var.scheme .. "://" .. ngx.var.host ..":8000" .. path_prefix
+	  callback_url = ngx.var.scheme .. "://" .. "localhost:8000" .. path_prefix
 	  handle_callback(conf, callback_url)
 	else
-	  callback_url = ngx.var.scheme .. "://" .. ngx.var.host ..":8000" .. path_prefix .. "/oauth2/callback"
+	  callback_url = ngx.var.scheme .. "://" .. "localhost:8000" .. path_prefix .. "/oauth2/callback"
 	end
 
 	local encrypted_token = ngx.var.cookie_EOAuthToken
