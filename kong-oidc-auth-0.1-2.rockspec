@@ -10,7 +10,7 @@ description = {
    license = "Apache 2.0"
 }
 dependencies = {
-    "lua-resty-jwt" ~> "0.2.0-0"
+    "lua-resty-jwt ~> 0.2.0-0"
 }
 build = {
    type = "builtin",
