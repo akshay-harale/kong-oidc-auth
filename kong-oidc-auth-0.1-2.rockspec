@@ -9,7 +9,9 @@ description = {
    homepage = "https://github.com/akshay-harale/kong-oidc-auth",
    license = "Apache 2.0"
 }
-dependencies = {}
+dependencies = {
+    "lua-resty-jwt" ~> "0.2.0-0"
+}
 build = {
    type = "builtin",
    modules = {
