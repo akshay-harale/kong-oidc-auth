@@ -11,8 +11,10 @@ local responses = require "kong.tools.responses"
 local oidc_error = nil
 local salt = nil --16 char alphanumeric
 local cookieDomain = nil
+local jwt = require "resty.jwt"
 
 local function getUserInfo(access_token, callback_url, conf)
+    
     local httpc = http:new()
     local res, err = httpc:request_uri(conf.user_url, {
         method = "GET",
@@ -158,6 +160,12 @@ function  handle_callback( conf, callback_url )
     end
 end
 
+function tablelength(T)
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+    return count
+end
+
 function _M.run(conf)
 	local path_prefix = ""
 	local callback_url = ""
@@ -173,12 +181,12 @@ function _M.run(conf)
 	
 	if pl_stringx.endswith(path_prefix, "/") then
 	  path_prefix = path_prefix:sub(1, path_prefix:len() - 1)
-	  callback_url = ngx.var.scheme .. "://" .. ngx.var.host .. path_prefix .. "/oauth2/callback"
+	  callback_url = ngx.var.scheme .. "://" .. "localhost:8000" .. path_prefix .. "/oauth2/callback"
 	elseif pl_stringx.endswith(path_prefix, "/oauth2/callback") then --We are in the callback of our proxy
-	  callback_url = ngx.var.scheme .. "://" .. ngx.var.host .. path_prefix
+	  callback_url = ngx.var.scheme .. "://" .. "localhost:8000" .. path_prefix
 	  handle_callback(conf, callback_url)
 	else
-	  callback_url = ngx.var.scheme .. "://" .. ngx.var.host .. path_prefix .. "/oauth2/callback"
+	  callback_url = ngx.var.scheme .. "://" .. "localhost:8000" .. path_prefix .. "/oauth2/callback"
 	end
 
 	local encrypted_token = ngx.var.cookie_EOAuthToken
@@ -202,6 +210,22 @@ function _M.run(conf)
 	    else
 		ngx.header["Set-Cookie"] = { "EOAuthToken=" .. encode_token(access_token, conf) .. ";Path=/;Expires=" .. ngx.cookie_time(ngx.time() + 1800) .. ";Max-Age=1800;HttpOnly" .. cookieDomain, ngx.header["Set-Cookie"] }
 	    end
+	    local decodedJwt=jwt:verify("lua-resty-jwt",access_token)
+
+        local realm_roles=""
+        local resource_roles =""
+        if decodedJwt  then
+            local realm_access=decodedJwt["payload"]["realm_access"]
+            local resources=decodedJwt["payload"]["resource_access"]
+            if(tablelength(realm_access) > 0) then
+                realm_roles=table.concat(decodedJwt["payload"]["realm_access"]["roles"],",")
+            end
+            if(tablelength(resources) > 0 ) then
+                resource_roles =table.concat(decodedJwt["payload"]["resource_access"][conf.client_id]["roles"],",")
+            end
+            local roles = realm_roles .. resource_roles
+            ngx.req.set_header("X-Oauth-Role",roles)
+        end
 
 	     --CACHE LOGIC - Check boolean and then if EOAUTH has existing key -> userInfo value
 	    if conf.user_info_cache_enabled then

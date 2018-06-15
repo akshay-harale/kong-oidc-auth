@@ -12,4 +12,6 @@ function KongOidcAuth:access(conf)
 	access.run(conf)
 end
 
+KongOidcAuth.PRIORITY = 1000
+
 return KongOidcAuth
