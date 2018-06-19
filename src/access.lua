@@ -211,7 +211,7 @@ function _M.run(conf)
 		ngx.header["Set-Cookie"] = { "EOAuthToken=" .. encode_token(access_token, conf) .. ";Path=/;Expires=" .. ngx.cookie_time(ngx.time() + 1800) .. ";Max-Age=1800;HttpOnly" .. cookieDomain, ngx.header["Set-Cookie"] }
 	    end
 	    local decodedJwt=jwt:verify("lua-resty-jwt",access_token)
-
+        print("access token" .. access_token)
         local realm_roles=""
         local resource_roles =""
         if decodedJwt  then
