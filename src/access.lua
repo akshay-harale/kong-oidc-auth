@@ -220,6 +220,7 @@ function _M.run(conf)
             if(tablelength(realm_access) > 0) then
                 realm_roles=table.concat(decodedJwt["payload"]["realm_access"]["roles"],",")
             end
+            print(tablelength(resources))
             if(tablelength(resources) > 0 ) then
                 resource_roles =table.concat(decodedJwt["payload"]["resource_access"][conf.client_id]["roles"],",")
             end
