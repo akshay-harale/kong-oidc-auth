@@ -222,7 +222,9 @@ function _M.run(conf)
             end
             print(tablelength(resources))
             if(tablelength(resources) > 0 ) then
-                resource_roles =table.concat(decodedJwt["payload"]["resource_access"][conf.client_id]["roles"],",")
+                if decodedJwt["payload"]["resource_access"][conf.client_id] then
+                    resource_roles =table.concat(decodedJwt["payload"]["resource_access"][conf.client_id]["roles"],",")
+                end
             end
             local roles = realm_roles .. resource_roles
             ngx.req.set_header("X-Oauth-Role",roles)
