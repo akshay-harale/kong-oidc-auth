@@ -188,7 +188,7 @@ function _M.run(conf)
 	else
 	  callback_url = ngx.var.scheme .. "://" .. ngx.var.host .. ":8000" .. path_prefix .. "/oauth2/callback"
 	end
-
+	print("callback-url::::" .. callback_url)
 	local encrypted_token = ngx.var.cookie_EOAuthToken
 	
 	-- check if we are authenticated already
