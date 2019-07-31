@@ -1,5 +1,6 @@
 # Kong OIDC Auth
 OpenID Connect authentication integration with the Kong Gateway
+Plus just added the roles to the request param.
 
 ## Configuration
 You can add the plugin with the following request:
